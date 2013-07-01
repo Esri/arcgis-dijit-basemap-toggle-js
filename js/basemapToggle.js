@@ -24,7 +24,7 @@ function (
         declaredClass: "modules.basemapToggle",
         templateString: dijitTemplate,
         options: {
-            theme: "default",
+            theme: "basemapToggle",
             map: null,
             visible: true,
             alternateBasemap: "hybrid"
@@ -46,7 +46,7 @@ function (
             this.watch("visible", this._visible);
             // classes
             this._css = {
-                container: "basemapToggle",
+                container: "container",
                 toggleButton: "toggleButton",
                 basemapImage: "basemapImage",
                 basemapTitle: "basemapTitle"

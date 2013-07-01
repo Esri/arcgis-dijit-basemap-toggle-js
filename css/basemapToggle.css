@@ -1,4 +1,4 @@
-.default .basemapToggle .toggleButton {
+.basemapToggle .toggleButton {
     padding: 4px;
     background: #666;
     background: rgba(102,102,102,0.80);
@@ -17,13 +17,13 @@
 	border-radius:5px;
 }
 
-.default .basemapToggle .basemapImage{
+.basemapToggle .basemapImage{
     width:60px;
     height: 60px;
     overflow: hidden;
 }
 
-.default .basemapToggle .basemapImage img{
+.basemapToggle .basemapImage img{
     max-width: 100%;
     max-height: 100%;
     width:100%;
@@ -33,7 +33,7 @@
     vertical-align: middle;
 }
 
-.default .basemapToggle .basemapTitle{
+.basemapToggle .basemapTitle{
     color:#666;
     font-size: 12px;
     line-height: 14px;
