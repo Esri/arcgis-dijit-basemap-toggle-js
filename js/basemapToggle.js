@@ -46,7 +46,7 @@ function (
             this.watch("visible", this._visible);
             // classes
             this._css = {
-                container: "container",
+                container: "basemapCon",
                 toggleButton: "toggleButton",
                 basemapImage: "basemapImage",
                 basemapTitle: "basemapTitle"
