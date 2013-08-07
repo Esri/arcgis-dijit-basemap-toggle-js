@@ -1,5 +1,6 @@
 define([
     "dojo/_base/declare",
+    "dojo/_base/lang",
     "dijit/_WidgetBase",
     "dijit/_OnDijitClickMixin",
     "dijit/_TemplatedMixin",
@@ -15,6 +16,7 @@ define([
 ],
 function (
     declare,
+    lang,
     _WidgetBase, _OnDijitClickMixin, _TemplatedMixin,
     on,
     dijitTemplate, i18n,
@@ -54,21 +56,20 @@ function (
         },
         // start widget. called by user
         startup: function() {
-            var _self = this;
             // map not defined
-            if (!_self.map) {
-                _self.destroy();
+            if (!this.map) {
+                this.destroy();
                 return new Error('map required');
             }
             // map domNode
-            _self._mapNode = dom.byId(_self.map.id);
+            this._mapNode = dom.byId(this.map.id);
             // when map is loaded
-            if (_self.map.loaded) {
-                _self._init();
+            if (this.map.loaded) {
+                this._init();
             } else {
-                on(_self.map, "load", function() {
-                    _self._init();
-                });
+                on(this.map, "load", lang.hitch(this, function() {
+                    this._init();
+                }));
             }
         },
         // connections/subscriptions will be cleaned up during the destroy() lifecycle phase
@@ -91,59 +92,54 @@ function (
             this.set("visible", false);
         },
         toggle: function() {
-            var _self = this;
-            var basemaps = _self.get("basemaps");
+            var basemaps = this.get("basemaps");
             var nextBasemap = basemaps[0]
             if (this.get("basemap") === basemaps[0]) {
                 nextBasemap = basemaps[1];
             }
-            if(_self.map.getBasemap() !== nextBasemap){
-                _self.map.setBasemap(nextBasemap);
-                _self.set("basemap", nextBasemap);   
+            if(this.map.getBasemap() !== nextBasemap){
+                this.map.setBasemap(nextBasemap);
+                this.set("basemap", nextBasemap);   
             }
         },
         /* ---------------- */
         /* Private Functions */
         /* ---------------- */
         _init: function() {
-            var _self = this;
-            _self._visible();
-            _self.onLoad();
-            var currentBasemap = _self.map.getBasemap();
-            _self.set("basemaps", [
-            currentBasemap, _self.get("alternateBasemap")]);
-            _self.set("basemap", currentBasemap);
-            _self._basemapChange();
-            on(_self.map, "basemap-change", function() {
-                _self._basemapChange();
-            });
+            this._visible();
+            this.onLoad();
+            var currentBasemap = this.map.getBasemap();
+            this.set("basemaps", [
+            currentBasemap, this.get("alternateBasemap")]);
+            this.set("basemap", currentBasemap);
+            this._basemapChange();
+            on(this.map, "basemap-change", lang.hitch(this, function() {
+                this._basemapChange();
+            }));
         },
         _basemapChange: function() {
-            var _self = this;
-            var basemaps = _self.get("basemaps");
-            var currentBasemap = _self.get("basemap");
+            var basemaps = this.get("basemaps");
+            var currentBasemap = this.get("basemap");
             var nextBasemap = basemaps[1];
             if (currentBasemap === basemaps[1]) {
                 nextBasemap = basemaps[0];
             }
-            _self._imgNode.innerHTML = '<img src="images/basemaps/' + nextBasemap + '.png" />';
-            domClass.remove(_self._toggleNode, currentBasemap);
-            domClass.add(_self._toggleNode, nextBasemap);
-            _self._titleNode.innerHTML = nextBasemap;
+            this._imgNode.innerHTML = '<img src="images/basemaps/' + nextBasemap + '.png" />';
+            domClass.remove(this._toggleNode, currentBasemap);
+            domClass.add(this._toggleNode, nextBasemap);
+            this._titleNode.innerHTML = nextBasemap;
         },
         _updateThemeWatch: function(attr, oldVal, newVal) {
-            var _self = this;
-            if (_self.get("loaded")) {
-                domClass.remove(_self.domNode, oldVal);
-                domClass.add(_self.domNode, newVal);
+            if (this.get("loaded")) {
+                domClass.remove(this.domNode, oldVal);
+                domClass.add(this.domNode, newVal);
             }
         },
         _visible: function() {
-            var _self = this;
-            if (_self.get("visible")) {
-                domStyle.set(_self.domNode, 'display', 'block');
+            if (this.get("visible")) {
+                domStyle.set(this.domNode, 'display', 'block');
             } else {
-                domStyle.set(_self.domNode, 'display', 'none');
+                domStyle.set(this.domNode, 'display', 'none');
             }
         }
     });
