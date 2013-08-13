@@ -29,7 +29,7 @@ function (
             theme: "basemapToggle",
             map: null,
             visible: true,
-            alternateBasemap: "hybrid"
+            basemap: "hybrid"
         },
         // lifecycle: 1
         constructor: function(options, srcRefNode) {
@@ -42,7 +42,7 @@ function (
             this.set("map", this.options.map);
             this.set("theme", this.options.theme);
             this.set("visible", this.options.visible);
-            this.set("alternateBasemap", this.options.alternateBasemap);
+            this.set("basemap", this.options.basemap);
             // listeners
             this.watch("theme", this._updateThemeWatch);
             this.watch("visible", this._visible);
@@ -110,7 +110,7 @@ function (
             this.onLoad();
             var currentBasemap = this.map.getBasemap();
             this.set("basemaps", [
-            currentBasemap, this.get("alternateBasemap")]);
+            currentBasemap, this.get("basemap")]);
             this.set("basemap", currentBasemap);
             this._basemapChange();
             on(this.map, "basemap-change", lang.hitch(this, function() {
