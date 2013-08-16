@@ -1,4 +1,5 @@
 define([
+    "dojo/Evented",
     "dojo/_base/declare",
     "dojo/_base/lang",
     "dijit/_WidgetBase",
@@ -6,30 +7,65 @@ define([
     "dijit/_TemplatedMixin",
     "dojo/on",
     // load template
-    "dojo/text!./templates/basemapToggle.html",
-    "dojo/i18n!./nls/basemapToggle",
+    "dojo/text!./templates/BasemapToggle.html",
+    "dojo/i18n!./nls/BasemapToggle",
     "dojo/dom",
     "dojo/dom-class",
     "dojo/dom-style",
-    "dojo/dom-attr",
     "dojo/dom-construct"
 ],
 function (
+    Evented,
     declare,
     lang,
     _WidgetBase, _OnDijitClickMixin, _TemplatedMixin,
     on,
     dijitTemplate, i18n,
-    dom, domClass, domStyle, domAttr, domConstruct
+    dom, domClass, domStyle, domConstruct
 ) {
+    var basePath = require.toUrl("esri/dijit");
     return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin], {
-        declaredClass: "modules.basemapToggle",
+        declaredClass: "esri.dijit.BasemapToggle",
         templateString: dijitTemplate,
         options: {
-            theme: "basemapToggle",
+            theme: "BasemapToggle",
             map: null,
             visible: true,
-            basemap: "hybrid"
+            basemap: "streets",
+            nextBasemap: "hybrid",
+            basemaps: [{
+                name: "streets",
+                label: i18n.basemapLabels.streets,
+                url: basePath + "/images/streets.png"
+            }, {
+                name: "satellite",
+                label: i18n.basemapLabels.satellite,
+                url: basePath + "/images/satellite.png"
+            }, {
+                name: "hybrid",
+                label: i18n.basemapLabels.hybrid,
+                url: basePath + "/images/hybrid.png"
+            }, {
+                name: "topo",
+                label: i18n.basemapLabels.topo,
+                url: basePath + "/images/topo.png"
+            }, {
+                name: "gray",
+                label: i18n.basemapLabels.gray,
+                url: basePath + "/images/gray.png"
+            }, {
+                name: "oceans",
+                label: i18n.basemapLabels.oceans,
+                url: basePath + "/images/oceans.png"
+            }, {
+                name: "national-geographic",
+                label: i18n.basemapLabels['national-geographic'],
+                url: basePath + "/images/national-geographic.png"
+            }, {
+                name: "osm",
+                label: i18n.basemapLabels.osm,
+                url: basePath + "/images/osm.png"
+            }]
         },
         // lifecycle: 1
         constructor: function(options, srcRefNode) {
@@ -42,7 +78,9 @@ function (
             this.set("map", this.options.map);
             this.set("theme", this.options.theme);
             this.set("visible", this.options.visible);
+            this.set("basemaps", this.options.basemaps);
             this.set("basemap", this.options.basemap);
+            this.set("nextBasemap", this.options.nextBasemap);
             // listeners
             this.watch("theme", this._updateThemeWatch);
             this.watch("visible", this._visible);
@@ -59,10 +97,8 @@ function (
             // map not defined
             if (!this.map) {
                 this.destroy();
-                return new Error('map required');
+                console.log('map required');
             }
-            // map domNode
-            this._mapNode = dom.byId(this.map.id);
             // when map is loaded
             if (this.map.loaded) {
                 this._init();
@@ -79,9 +115,8 @@ function (
         /* ---------------- */
         /* Public Events */
         /* ---------------- */
-        onLoad: function() {
-            this.set("loaded", true);
-        },
+        // load
+        // toggle
         /* ---------------- */
         /* Public Functions */
         /* ---------------- */
@@ -92,42 +127,49 @@ function (
             this.set("visible", false);
         },
         toggle: function() {
-            var basemaps = this.get("basemaps");
-            var nextBasemap = basemaps[0]
-            if (this.get("basemap") === basemaps[0]) {
-                nextBasemap = basemaps[1];
-            }
-            if(this.map.getBasemap() !== nextBasemap){
-                this.map.setBasemap(nextBasemap);
-                this.set("basemap", nextBasemap);   
-            }
+            this.emit("toggle", {});
+            var currentBasemap = this.get("basemap");
+            var nextBasemap = this.get("nextBasemap");
+            this.map.setBasemap(nextBasemap);
+            this.set("basemap", nextBasemap);
+            this.set("nextBasemap", currentBasemap);
         },
         /* ---------------- */
         /* Private Functions */
         /* ---------------- */
         _init: function() {
             this._visible();
-            this.onLoad();
-            var currentBasemap = this.map.getBasemap();
-            this.set("basemaps", [
-            currentBasemap, this.get("basemap")]);
-            this.set("basemap", currentBasemap);
+            this.set("loaded", true);
+            this.emit("load", {});
+            this.set("basemap", this.map.getBasemap());
             this._basemapChange();
             on(this.map, "basemap-change", lang.hitch(this, function() {
                 this._basemapChange();
             }));
         },
-        _basemapChange: function() {
+        _getBasemapInfo: function(basemap) {
             var basemaps = this.get("basemaps");
-            var currentBasemap = this.get("basemap");
-            var nextBasemap = basemaps[1];
-            if (currentBasemap === basemaps[1]) {
-                nextBasemap = basemaps[0];
+            if (basemaps && basemaps.length) {
+                for (var i = 0; i < basemaps.length; i++) {
+                    if (basemaps[i].name === basemap) {
+                        return basemaps[i];
+                    }
+                }
+                return basemaps[0];
             }
-            this._imgNode.innerHTML = '<img src="images/basemaps/' + nextBasemap + '.png" />';
+        },
+        _basemapChange: function() {
+            console.log('changed');
+            var currentBasemap = this.get("basemap");
+            var nextBasemap = this.get("nextBasemap");
+            var info = this._getBasemapInfo(nextBasemap);
+            var html = '';
+            html += '<div class="' + this._css.basemapImage + '"><img alt="' + info.label + '" src="' + info.url + '" /></div>';
+            html += '<div class="' + this._css.basemapTitle + '">' + info.label + '</div>';
             domClass.remove(this._toggleNode, currentBasemap);
             domClass.add(this._toggleNode, nextBasemap);
-            this._titleNode.innerHTML = nextBasemap;
+            domConstruct.empty(this._toggleNode);
+            domConstruct.place(html, this._toggleNode, 'only');
         },
         _updateThemeWatch: function(attr, oldVal, newVal) {
             if (this.get("loaded")) {
