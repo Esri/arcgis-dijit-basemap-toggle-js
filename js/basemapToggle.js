@@ -31,8 +31,7 @@ function (
             theme: "BasemapToggle",
             map: null,
             visible: true,
-            basemap: "streets",
-            nextBasemap: "hybrid",
+            basemap: "hybrid",
             basemaps: [{
                 name: "streets",
                 label: i18n.basemapLabels.streets,
@@ -80,7 +79,6 @@ function (
             this.set("visible", this.options.visible);
             this.set("basemaps", this.options.basemaps);
             this.set("basemap", this.options.basemap);
-            this.set("nextBasemap", this.options.nextBasemap);
             // listeners
             this.watch("theme", this._updateThemeWatch);
             this.watch("visible", this._visible);
@@ -127,12 +125,11 @@ function (
             this.set("visible", false);
         },
         toggle: function() {
+            var currentBasemap = this.map.getBasemap();
+            var basemap = this.get("basemap");
+            this.map.setBasemap(basemap);
+            this.set("basemap", currentBasemap);
             this.emit("toggle", {});
-            var currentBasemap = this.get("basemap");
-            var nextBasemap = this.get("nextBasemap");
-            this.map.setBasemap(nextBasemap);
-            this.set("basemap", nextBasemap);
-            this.set("nextBasemap", currentBasemap);
         },
         /* ---------------- */
         /* Private Functions */
@@ -141,7 +138,6 @@ function (
             this._visible();
             this.set("loaded", true);
             this.emit("load", {});
-            this.set("basemap", this.map.getBasemap());
             this._basemapChange();
             on(this.map, "basemap-change", lang.hitch(this, function() {
                 this._basemapChange();
@@ -159,15 +155,14 @@ function (
             }
         },
         _basemapChange: function() {
-            console.log('changed');
-            var currentBasemap = this.get("basemap");
-            var nextBasemap = this.get("nextBasemap");
-            var info = this._getBasemapInfo(nextBasemap);
+            var currentBasemap = this.map.getBasemap();
+            var basemap = this.get("basemap");
+            var info = this._getBasemapInfo(basemap);
             var html = '';
             html += '<div class="' + this._css.basemapImage + '"><img alt="' + info.label + '" src="' + info.url + '" /></div>';
             html += '<div class="' + this._css.basemapTitle + '">' + info.label + '</div>';
             domClass.remove(this._toggleNode, currentBasemap);
-            domClass.add(this._toggleNode, nextBasemap);
+            domClass.add(this._toggleNode, basemap);
             domConstruct.empty(this._toggleNode);
             domConstruct.place(html, this._toggleNode, 'only');
         },
