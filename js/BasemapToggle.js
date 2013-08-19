@@ -32,39 +32,40 @@ function (
             map: null,
             visible: true,
             basemap: "hybrid",
-            basemaps: [{
-                name: "streets",
-                label: i18n.basemapLabels.streets,
-                url: basePath + "/images/streets.png"
-            }, {
-                name: "satellite",
-                label: i18n.basemapLabels.satellite,
-                url: basePath + "/images/satellite.png"
-            }, {
-                name: "hybrid",
-                label: i18n.basemapLabels.hybrid,
-                url: basePath + "/images/hybrid.png"
-            }, {
-                name: "topo",
-                label: i18n.basemapLabels.topo,
-                url: basePath + "/images/topo.png"
-            }, {
-                name: "gray",
-                label: i18n.basemapLabels.gray,
-                url: basePath + "/images/gray.png"
-            }, {
-                name: "oceans",
-                label: i18n.basemapLabels.oceans,
-                url: basePath + "/images/oceans.png"
-            }, {
-                name: "national-geographic",
-                label: i18n.basemapLabels['national-geographic'],
-                url: basePath + "/images/national-geographic.png"
-            }, {
-                name: "osm",
-                label: i18n.basemapLabels.osm,
-                url: basePath + "/images/osm.png"
-            }]
+            basemaps: {
+                "streets": {
+                    label: i18n.basemapLabels.streets,
+                    url: basePath + "/images/streets.png"
+                }, 
+                "satellite": {
+                    label: i18n.basemapLabels.satellite,
+                    url: basePath + "/images/satellite.png"
+                }, 
+                "hybrid": {
+                    label: i18n.basemapLabels.hybrid,
+                    url: basePath + "/images/hybrid.png"
+                }, 
+                "topo": {
+                    label: i18n.basemapLabels.topo,
+                    url: basePath + "/images/topo.png"
+                }, 
+                "gray": {
+                    label: i18n.basemapLabels.gray,
+                    url: basePath + "/images/gray.png"
+                }, 
+                "oceans": {
+                    label: i18n.basemapLabels.oceans,
+                    url: basePath + "/images/oceans.png"
+                }, 
+                "national-geographic": {
+                    label: i18n.basemapLabels['national-geographic'],
+                    url: basePath + "/images/national-geographic.png"
+                }, 
+                "osm": {
+                    label: i18n.basemapLabels.osm,
+                    url: basePath + "/images/osm.png"
+                }
+            }
         },
         // lifecycle: 1
         constructor: function(options, srcRefNode) {
@@ -95,7 +96,7 @@ function (
             // map not defined
             if (!this.map) {
                 this.destroy();
-                console.log('map required');
+                console.log('BasemapToggle::map required');
             }
             // when map is loaded
             if (this.map.loaded) {
@@ -145,13 +146,8 @@ function (
         },
         _getBasemapInfo: function(basemap) {
             var basemaps = this.get("basemaps");
-            if (basemaps && basemaps.length) {
-                for (var i = 0; i < basemaps.length; i++) {
-                    if (basemaps[i].name === basemap) {
-                        return basemaps[i];
-                    }
-                }
-                return basemaps[0];
+            if (basemaps && basemaps.hasOwnProperty(basemap) ) {
+                return basemaps[basemap];
             }
         },
         _basemapChange: function() {
