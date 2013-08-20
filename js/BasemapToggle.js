@@ -2,6 +2,8 @@ define([
     "dojo/Evented",
     "dojo/_base/declare",
     "dojo/_base/lang",
+    "dojo/has",
+    "esri/kernel",
     "dijit/_WidgetBase",
     "dijit/_OnDijitClickMixin",
     "dijit/_TemplatedMixin",
@@ -9,7 +11,6 @@ define([
     // load template
     "dojo/text!./templates/BasemapToggle.html",
     "dojo/i18n!./nls/BasemapToggle",
-    "dojo/dom",
     "dojo/dom-class",
     "dojo/dom-style",
     "dojo/dom-construct"
@@ -18,13 +19,14 @@ function (
     Evented,
     declare,
     lang,
+    has, esriNS,
     _WidgetBase, _OnDijitClickMixin, _TemplatedMixin,
     on,
     dijitTemplate, i18n,
-    dom, domClass, domStyle, domConstruct
+    domClass, domStyle, domConstruct
 ) {
     var basePath = require.toUrl("esri/dijit");
-    return declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin], {
+    var Widget = declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin], {
         declaredClass: "esri.dijit.BasemapToggle",
         templateString: dijitTemplate,
         options: {
@@ -176,4 +178,8 @@ function (
             }
         }
     });
+    if (has("extend-esri")) {
+        lang.setObject("dijit.BasemapToggle", Widget, esriNS);
+    }
+    return Widget;
 });
