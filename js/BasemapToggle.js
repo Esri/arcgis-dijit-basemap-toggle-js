@@ -9,8 +9,8 @@ define([
     "dijit/_TemplatedMixin",
     "dojo/on",
     // load template
-    "dojo/text!./templates/BasemapToggle.html",
-    "dojo/i18n!./nls/BasemapToggle",
+    "dojo/text!zesri/dijit/templates/BasemapToggle.html",
+    "dojo/i18n!zesri/nls/jsapi",
     "dojo/dom-class",
     "dojo/dom-style",
     "dojo/dom-construct"
@@ -36,36 +36,36 @@ function (
             basemap: "hybrid",
             basemaps: {
                 "streets": {
-                    label: i18n.basemapLabels.streets,
-                    url: basePath + "/images/streets.png"
+                    label: i18n.widgets.basemapToggle.basemapLabels.streets,
+                    url: basePath + "/images/basemaps/streets.png"
                 }, 
                 "satellite": {
-                    label: i18n.basemapLabels.satellite,
-                    url: basePath + "/images/satellite.png"
+                    label: i18n.widgets.basemapToggle.basemapLabels.satellite,
+                    url: basePath + "/images/basemaps/satellite.png"
                 }, 
                 "hybrid": {
-                    label: i18n.basemapLabels.hybrid,
-                    url: basePath + "/images/hybrid.png"
+                    label: i18n.widgets.basemapToggle.basemapLabels.hybrid,
+                    url: basePath + "/images/basemaps/hybrid.png"
                 }, 
                 "topo": {
-                    label: i18n.basemapLabels.topo,
-                    url: basePath + "/images/topo.png"
+                    label: i18n.widgets.basemapToggle.basemapLabels.topo,
+                    url: basePath + "/images/basemaps/topo.png"
                 }, 
                 "gray": {
-                    label: i18n.basemapLabels.gray,
-                    url: basePath + "/images/gray.png"
+                    label: i18n.widgets.basemapToggle.basemapLabels.gray,
+                    url: basePath + "/images/basemaps/gray.png"
                 }, 
                 "oceans": {
-                    label: i18n.basemapLabels.oceans,
-                    url: basePath + "/images/oceans.png"
+                    label: i18n.widgets.basemapToggle.basemapLabels.oceans,
+                    url: basePath + "/images/basemaps/oceans.png"
                 }, 
                 "national-geographic": {
-                    label: i18n.basemapLabels['national-geographic'],
-                    url: basePath + "/images/national-geographic.png"
+                    label: i18n.widgets.basemapToggle.basemapLabels['national-geographic'],
+                    url: basePath + "/images/basemaps/national-geographic.png"
                 }, 
                 "osm": {
-                    label: i18n.basemapLabels.osm,
-                    url: basePath + "/images/osm.png"
+                    label: i18n.widgets.basemapToggle.basemapLabels.osm,
+                    url: basePath + "/images/basemaps/osm.png"
                 }
             }
         },
