@@ -26,7 +26,7 @@ function (
     domClass, domStyle, domConstruct
 ) {
     var basePath = require.toUrl("esri/dijit");
-    var Widget = declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin], {
+    var Widget = declare([Evented, _WidgetBase, _OnDijitClickMixin, _TemplatedMixin], {
         declaredClass: "esri.dijit.BasemapToggle",
         templateString: dijitTemplate,
         options: {
@@ -139,12 +139,12 @@ function (
         /* ---------------- */
         _init: function() {
             this._visible();
-            this.set("loaded", true);
-            this.emit("load", {});
             this._basemapChange();
             on(this.map, "basemap-change", lang.hitch(this, function() {
                 this._basemapChange();
             }));
+            this.set("loaded", true);
+            this.emit("load", {});
         },
         _getBasemapInfo: function(basemap) {
             var basemaps = this.get("basemaps");
