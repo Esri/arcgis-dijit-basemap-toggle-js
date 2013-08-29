@@ -130,9 +130,14 @@ function (
         toggle: function() {
             var currentBasemap = this.map.getBasemap();
             var basemap = this.get("basemap");
-            this.map.setBasemap(basemap);
-            this.set("basemap", currentBasemap);
-            this.emit("toggle", {});
+            if(currentBasemap !== basemap){
+                this.map.setBasemap(basemap);
+                this.set("basemap", currentBasemap);
+                this.emit("toggle", {
+                    previousBasemap: currentBasemap,
+                    currentBasemap: basemap
+                });   
+            }
         },
         /* ---------------- */
         /* Private Functions */
