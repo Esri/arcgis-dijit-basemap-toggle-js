@@ -34,6 +34,7 @@ function (
             map: null,
             visible: true,
             basemap: "hybrid",
+            defaultBasemap: "streets",
             basemaps: {
                 "streets": {
                     label: i18n.widgets.basemapToggle.basemapLabels.streets,
@@ -82,6 +83,7 @@ function (
             this.set("visible", this.options.visible);
             this.set("basemaps", this.options.basemaps);
             this.set("basemap", this.options.basemap);
+            this.set("defaultBasemap", this.options.defaultBasemap);
             // listeners
             this.watch("theme", this._updateThemeWatch);
             this.watch("visible", this._visible);
@@ -128,7 +130,11 @@ function (
             this.set("visible", false);
         },
         toggle: function() {
-            var currentBasemap = this.map.getBasemap();
+            var bm = this.map.getBasemap();
+            if(bm){
+                this.set("defaultBasemap", bm);
+            }
+            var currentBasemap = this.get("defaultBasemap");
             var basemap = this.get("basemap");
             if(currentBasemap !== basemap){
                 this.map.setBasemap(basemap);
@@ -158,7 +164,11 @@ function (
             }
         },
         _basemapChange: function() {
-            var currentBasemap = this.map.getBasemap();
+            var bm = this.map.getBasemap();
+            if(bm){
+                this.set("defaultBasemap", bm);
+            }
+            var currentBasemap = this.get("defaultBasemap");
             var basemap = this.get("basemap");
             var info = this._getBasemapInfo(basemap);
             var html = '';

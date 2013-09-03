@@ -57,21 +57,50 @@
     <script src="http://js.arcgis.com/3.6/" type="text/javascript"></script>
     <script type="text/javascript">
 
-        require(["esri/map", "modules/BasemapToggle"], function(Map,BasemapToggle){
+        require(["esri/map", "modules/BasemapToggle", "esri/arcgis/utils", "dojo/_base/lang", "dojo/on"], function(Map,BasemapToggle,arcgisUtils, lang, on){
 
-            var myMap = new Map("map", {
-                center: [-56.049, 38.485],
-                zoom: 3,
-                basemap: "streets"
-            });
+            var map;
+            
+            function mapLoaded(){
+            
+                myWidget = new BasemapToggle({
+                    basemap: "hybrid",
+                    map: map,
+                }, "BasemapToggle");
+                myWidget.startup();
+                
+                
+            }
+            
+            
+            
+            arcgisUtils.createMap('de5ae0c2040c49d38e9ea0637454ac73', "map", {
+                mapOptions: {
+                    //Optionally define additional map config here for example you can 
+                    //turn the slider off, display info windows, disable wraparound 180, slider position and more. 
+                }
+            }).then(lang.hitch(this, function(response) {
+                //Once the map is created we get access to the response which provides important info 
+                //such as the map, operational layers, popup info and more. This object will also contain
+                //any custom options you defined for the template. In this example that is the 'theme' property.
+                //Here' we'll use it to update the application to match the specified color theme.  
+                map = response.map;
+                if (map.loaded) {
+                    // do something with the map
+                    mapLoaded();
+                } else {
+                    on(map, "load", lang.hitch(this, function() {
+                        // do something with the map
+                        mapLoaded();
+                    }));
+                }
+            }), lang.hitch(this, function(error) {
+                //an error occurred - notify the user. In this example we pull the string from the 
+                //resource.js file located in the nls folder because we've set the application up 
+                //for localization. If you don't need to support mulitple languages you can hardcode the 
+                //strings here and comment out the call in index.html to get the localization strings. 
 
-            
-            myWidget = new BasemapToggle({
-                basemap: "hybrid",
-                map: myMap,
-            }, "BasemapToggle");
-            myWidget.startup();
-            
+            }));
             
             
 
