@@ -38,35 +38,35 @@ function (
             basemaps: {
                 "streets": {
                     label: i18n.widgets.basemapToggle.basemapLabels.streets,
-                    url: basePath + "/images/basemaps/streets.png"
+                    url: basePath + "/images/basemaps/streets.jpg"
                 }, 
                 "satellite": {
                     label: i18n.widgets.basemapToggle.basemapLabels.satellite,
-                    url: basePath + "/images/basemaps/satellite.png"
+                    url: basePath + "/images/basemaps/satellite.jpg"
                 }, 
                 "hybrid": {
                     label: i18n.widgets.basemapToggle.basemapLabels.hybrid,
-                    url: basePath + "/images/basemaps/hybrid.png"
+                    url: basePath + "/images/basemaps/hybrid.jpg"
                 }, 
                 "topo": {
                     label: i18n.widgets.basemapToggle.basemapLabels.topo,
-                    url: basePath + "/images/basemaps/topo.png"
+                    url: basePath + "/images/basemaps/topo.jpg"
                 }, 
                 "gray": {
                     label: i18n.widgets.basemapToggle.basemapLabels.gray,
-                    url: basePath + "/images/basemaps/gray.png"
+                    url: basePath + "/images/basemaps/gray.jpg"
                 }, 
                 "oceans": {
                     label: i18n.widgets.basemapToggle.basemapLabels.oceans,
-                    url: basePath + "/images/basemaps/oceans.png"
+                    url: basePath + "/images/basemaps/oceans.jpg"
                 }, 
                 "national-geographic": {
                     label: i18n.widgets.basemapToggle.basemapLabels['national-geographic'],
-                    url: basePath + "/images/basemaps/national-geographic.png"
+                    url: basePath + "/images/basemaps/national-geographic.jpg"
                 }, 
                 "osm": {
                     label: i18n.widgets.basemapToggle.basemapLabels.osm,
-                    url: basePath + "/images/basemaps/osm.png"
+                    url: basePath + "/images/basemaps/osm.jpg"
                 }
             }
         },
