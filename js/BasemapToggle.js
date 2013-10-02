@@ -13,7 +13,8 @@ define([
     "dojo/i18n!zesri/nls/jsapi",
     "dojo/dom-class",
     "dojo/dom-style",
-    "dojo/dom-construct"
+    "dojo/dom-construct",
+    "esri/geometry/webMercatorUtils"
 ],
 function (
     Evented,
@@ -23,7 +24,8 @@ function (
     _WidgetBase, _OnDijitClickMixin, _TemplatedMixin,
     on,
     dijitTemplate, i18n,
-    domClass, domStyle, domConstruct
+    domClass, domStyle, domConstruct,
+    webMercatorUtils
 ) {
     var basePath = require.toUrl("esri/dijit");
     var Widget = declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, Evented], {
@@ -38,34 +40,42 @@ function (
             basemaps: {
                 "streets": {
                     label: i18n.widgets.basemapToggle.basemapLabels.streets,
+                    tileUrl: location.protocol + '//services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
                     url: basePath + "/images/basemaps/streets.jpg"
                 }, 
                 "satellite": {
                     label: i18n.widgets.basemapToggle.basemapLabels.satellite,
+                    tileUrl: location.protocol + '//services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                     url: basePath + "/images/basemaps/satellite.jpg"
                 }, 
                 "hybrid": {
                     label: i18n.widgets.basemapToggle.basemapLabels.hybrid,
+                    tileUrl: location.protocol + '//services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                     url: basePath + "/images/basemaps/hybrid.jpg"
                 }, 
                 "topo": {
                     label: i18n.widgets.basemapToggle.basemapLabels.topo,
+                    tileUrl: location.protocol + '//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
                     url: basePath + "/images/basemaps/topo.jpg"
                 }, 
                 "gray": {
                     label: i18n.widgets.basemapToggle.basemapLabels.gray,
+                    tileUrl: location.protocol + '//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
                     url: basePath + "/images/basemaps/gray.jpg"
                 }, 
                 "oceans": {
                     label: i18n.widgets.basemapToggle.basemapLabels.oceans,
+                    tileUrl: location.protocol + '//services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
                     url: basePath + "/images/basemaps/oceans.jpg"
                 }, 
                 "national-geographic": {
                     label: i18n.widgets.basemapToggle.basemapLabels['national-geographic'],
+                    tileUrl: location.protocol + '//services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}',
                     url: basePath + "/images/basemaps/national-geographic.jpg"
                 }, 
                 "osm": {
                     label: i18n.widgets.basemapToggle.basemapLabels.osm,
+                    tileUrl: location.protocol + '//c.tile.openstreetmap.org/{z}/{x}/{y}.png',
                     url: basePath + "/images/basemaps/osm.jpg"
                 }
             }
@@ -139,10 +149,11 @@ function (
             if(currentBasemap !== basemap){
                 this.map.setBasemap(basemap);
                 this.set("basemap", currentBasemap);
+                this._basemapChange();
                 this.emit("toggle", {
                     previousBasemap: currentBasemap,
                     currentBasemap: basemap
-                });   
+                });
             }
         },
         /* ---------------- */
@@ -154,6 +165,9 @@ function (
             on(this.map, "basemap-change", lang.hitch(this, function() {
                 this._basemapChange();
             }));
+            on(this.map, "extent-change", lang.hitch(this, function() {
+                this._updateImage();
+            }));
             this.set("loaded", true);
             this.emit("load", {});
         },
@@ -163,6 +177,35 @@ function (
                 return basemaps[basemap];
             }
         },
+        _pointToTile: function(point, tileInfo, currentLevel) {
+            //console.log(point,tileInfo,currentLevel);
+            var tileWidth = tileInfo.width * tileInfo.lods[currentLevel].resolution;
+            var tileHeight = tileInfo.height * tileInfo.lods[currentLevel].resolution;
+            var column = Math.floor((point.x - tileInfo.origin.x) / tileWidth);
+            var row = Math.floor((tileInfo.origin.y - point.y) / tileHeight);
+            return {'z':currentLevel, 'y':row, 'x':column};
+        },
+        _updateImage: function(){
+            var basemap = this.get("basemap");
+            var info = this._getBasemapInfo(basemap);
+            var imageUrl = info.url;
+            if(info.tileUrl){
+                var center = this.map.extent.getCenter();
+                var tileInfo = this.map.__tileInfo;
+                var tile = this._pointToTile(center, tileInfo, this.map.getLevel());
+                //var imageUrl = tileUrl + '/tile/' + tile.level + '/' + tile.row + '/' + tile.column;
+                var imageUrl = lang.replace(info.tileUrl, {
+                     z: tile.z,
+                     y: tile.y,
+                     x: tile.x
+                });
+            }
+            var html = '';
+            html += '<div class="' + this._css.basemapImage + '"><img alt="' + info.label + '" src="' + imageUrl + '" /></div>';
+            html += '<div class="' + this._css.basemapTitle + '">' + info.label + '</div>';
+            domConstruct.empty(this._toggleNode);
+            domConstruct.place(html, this._toggleNode, 'only');
+        },
         _basemapChange: function() {
             var bm = this.map.getBasemap();
             if(bm){
@@ -170,14 +213,9 @@ function (
             }
             var currentBasemap = this.get("defaultBasemap");
             var basemap = this.get("basemap");
-            var info = this._getBasemapInfo(basemap);
-            var html = '';
-            html += '<div class="' + this._css.basemapImage + '"><img alt="' + info.label + '" src="' + info.url + '" /></div>';
-            html += '<div class="' + this._css.basemapTitle + '">' + info.label + '</div>';
+            this._updateImage();
             domClass.remove(this._toggleNode, currentBasemap);
             domClass.add(this._toggleNode, basemap);
-            domConstruct.empty(this._toggleNode);
-            domConstruct.place(html, this._toggleNode, 'only');
         },
         _updateThemeWatch: function(attr, oldVal, newVal) {
             if (this.get("loaded")) {

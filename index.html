@@ -65,16 +65,30 @@
             
                 myWidget = new BasemapToggle({
                     basemap: "hybrid",
+                    defaultBasemap: "topo",
                     map: map,
                 }, "BasemapToggle");
                 myWidget.startup();
+                
+                
+                /* Start temporary until after JSAPI 3.8 is released */
+                var layers = map.getLayersVisibleAtScale(map.getScale());
+                on.once(map, 'basemap-change', lang.hitch(this, function(){
+                    for(var i = 0; i < layers.length; i++){
+                        if(layers[i]._basemapGalleryLayerType){
+                            var layer = map.getLayer(layers[i].id);
+                            map.removeLayer(layer);
+                        }
+                    }
+                }));
+                /* END temporary until after JSAPI 3.8 is released */
                 
                 
             }
             
             
             
-            arcgisUtils.createMap('de5ae0c2040c49d38e9ea0637454ac73', "map", {
+            arcgisUtils.createMap('376ac7b2704c4bca9c1abf3c6e447569', "map", {
                 mapOptions: {
                     //Optionally define additional map config here for example you can 
                     //turn the slider off, display info windows, disable wraparound 180, slider position and more. 

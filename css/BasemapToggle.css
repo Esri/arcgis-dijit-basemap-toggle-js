@@ -1,18 +1,18 @@
 .BasemapToggle .toggleButton {
-	padding:4px;
+	padding:1px;
 	background:#666;
 	background:rgba(102,102,102,0.80);
 	background:#fff;
-	border:2px solid #666;
+	border:1px solid #666;
 	-webkit-user-select:none;
 	-moz-user-select:none;
 	-ms-user-select:none;
 	user-select:none;
 	cursor:pointer;
-	-webkit-border-radius:5px;
-	-moz-border-radius:5px;
-	-o-border-radius:5px;
-	border-radius:5px;
+	-webkit-border-radius:1px;
+	-moz-border-radius:1px;
+	-o-border-radius:1px;
+	border-radius:1px;
 }
 
 .BasemapToggle .basemapImage {
@@ -33,11 +33,16 @@
 
 .BasemapToggle .basemapTitle {
 	color:#666;
-	font-size:12px;
-	line-height:14px;
-	height:14px;
+	margin:1px 0 0;
+	font-size:11px;
+	line-height:16px;
+	height:16px;
 	display:block;
 	padding:0;
 	text-align:center;
 	text-transform:capitalize;
+	width:60px;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+	overflow:hidden;
 }
