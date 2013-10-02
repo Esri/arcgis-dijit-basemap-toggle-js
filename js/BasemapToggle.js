@@ -193,7 +193,6 @@ function (
                 var center = this.map.extent.getCenter();
                 var tileInfo = this.map.__tileInfo;
                 var tile = this._pointToTile(center, tileInfo, this.map.getLevel());
-                //var imageUrl = tileUrl + '/tile/' + tile.level + '/' + tile.row + '/' + tile.column;
                 var imageUrl = lang.replace(info.tileUrl, {
                      z: tile.z,
                      y: tile.y,
