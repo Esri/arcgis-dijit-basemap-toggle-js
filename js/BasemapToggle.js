@@ -40,42 +40,34 @@ function (
             basemaps: {
                 "streets": {
                     label: i18n.widgets.basemapToggle.basemapLabels.streets,
-                    tileUrl: location.protocol + '//services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
                     url: basePath + "/images/basemaps/streets.jpg"
                 }, 
                 "satellite": {
                     label: i18n.widgets.basemapToggle.basemapLabels.satellite,
-                    tileUrl: location.protocol + '//services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                     url: basePath + "/images/basemaps/satellite.jpg"
                 }, 
                 "hybrid": {
                     label: i18n.widgets.basemapToggle.basemapLabels.hybrid,
-                    tileUrl: location.protocol + '//services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                     url: basePath + "/images/basemaps/hybrid.jpg"
                 }, 
                 "topo": {
                     label: i18n.widgets.basemapToggle.basemapLabels.topo,
-                    tileUrl: location.protocol + '//services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
                     url: basePath + "/images/basemaps/topo.jpg"
                 }, 
                 "gray": {
                     label: i18n.widgets.basemapToggle.basemapLabels.gray,
-                    tileUrl: location.protocol + '//services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
                     url: basePath + "/images/basemaps/gray.jpg"
                 }, 
                 "oceans": {
                     label: i18n.widgets.basemapToggle.basemapLabels.oceans,
-                    tileUrl: location.protocol + '//services.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
                     url: basePath + "/images/basemaps/oceans.jpg"
                 }, 
                 "national-geographic": {
                     label: i18n.widgets.basemapToggle.basemapLabels['national-geographic'],
-                    tileUrl: location.protocol + '//services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}',
                     url: basePath + "/images/basemaps/national-geographic.jpg"
                 }, 
                 "osm": {
                     label: i18n.widgets.basemapToggle.basemapLabels.osm,
-                    tileUrl: location.protocol + '//c.tile.openstreetmap.org/{z}/{x}/{y}.png',
                     url: basePath + "/images/basemaps/osm.jpg"
                 }
             }
@@ -177,28 +169,10 @@ function (
                 return basemaps[basemap];
             }
         },
-        _pointToTile: function(point, tileInfo, currentLevel) {
-            //console.log(point,tileInfo,currentLevel);
-            var tileWidth = tileInfo.width * tileInfo.lods[currentLevel].resolution;
-            var tileHeight = tileInfo.height * tileInfo.lods[currentLevel].resolution;
-            var column = Math.floor((point.x - tileInfo.origin.x) / tileWidth);
-            var row = Math.floor((tileInfo.origin.y - point.y) / tileHeight);
-            return {'z':currentLevel, 'y':row, 'x':column};
-        },
         _updateImage: function(){
             var basemap = this.get("basemap");
             var info = this._getBasemapInfo(basemap);
             var imageUrl = info.url;
-            if(info.tileUrl){
-                var center = this.map.extent.getCenter();
-                var tileInfo = this.map.__tileInfo;
-                var tile = this._pointToTile(center, tileInfo, this.map.getLevel());
-                var imageUrl = lang.replace(info.tileUrl, {
-                     z: tile.z,
-                     y: tile.y,
-                     x: tile.x
-                });
-            }
             var html = '';
             html += '<div class="' + this._css.basemapImage + '"><img alt="' + info.label + '" src="' + imageUrl + '" /></div>';
             html += '<div class="' + this._css.basemapTitle + '">' + info.label + '</div>';
