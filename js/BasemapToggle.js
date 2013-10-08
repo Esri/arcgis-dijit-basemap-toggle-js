@@ -13,8 +13,7 @@ define([
     "dojo/i18n!zesri/nls/jsapi",
     "dojo/dom-class",
     "dojo/dom-style",
-    "dojo/dom-construct",
-    "esri/geometry/webMercatorUtils"
+    "dojo/dom-construct"
 ],
 function (
     Evented,
@@ -24,8 +23,7 @@ function (
     _WidgetBase, _OnDijitClickMixin, _TemplatedMixin,
     on,
     dijitTemplate, i18n,
-    domClass, domStyle, domConstruct,
-    webMercatorUtils
+    domClass, domStyle, domConstruct
 ) {
     var basePath = require.toUrl("esri/dijit");
     var Widget = declare([_WidgetBase, _OnDijitClickMixin, _TemplatedMixin, Evented], {
@@ -156,9 +154,6 @@ function (
             this._basemapChange();
             on(this.map, "basemap-change", lang.hitch(this, function() {
                 this._basemapChange();
-            }));
-            on(this.map, "extent-change", lang.hitch(this, function() {
-                this._updateImage();
             }));
             this.set("loaded", true);
             this.emit("load", {});
