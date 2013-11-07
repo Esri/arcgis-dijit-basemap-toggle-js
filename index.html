@@ -70,6 +70,10 @@
                 }, "BasemapToggle");
                 myWidget.startup();
                 
+                myWidget.on('toggle', function(evt){
+                   console.log(evt); 
+                });
+                
                 
                 /* Start temporary until after JSAPI 3.8 is released */
                 var layers = map.getLayersVisibleAtScale(map.getScale());

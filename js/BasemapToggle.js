@@ -142,20 +142,19 @@ function (
             }
             var currentBasemap = this.get("defaultBasemap");
             var basemap = this.get("basemap");
+            var toggleEvt = {
+                previousBasemap: currentBasemap,
+                currentBasemap: basemap
+            };
             if(currentBasemap !== basemap){
                 this.map.setBasemap(basemap);
                 this.set("basemap", currentBasemap);
                 this._basemapChange();
-                this.emit("toggle", {
-                    previousBasemap: currentBasemap,
-                    currentBasemap: basemap
-                });
             }
             else{
-                this.emit("toggle", {
-                    error: 'Current basemap is same as new basemap'
-                });
+                toggleEvt.error = new Error("BasemapToggle::Current basemap is same as new basemap");
             }
+            this.emit("toggle", toggleEvt);
         },
         /* ---------------- */
         /* Private Functions */
