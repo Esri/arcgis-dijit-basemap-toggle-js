@@ -151,6 +151,11 @@ function (
                     currentBasemap: basemap
                 });
             }
+            else{
+                this.emit("toggle", {
+                    error: 'Current basemap is same as new basemap'
+                });
+            }
         },
         /* ---------------- */
         /* Private Functions */
