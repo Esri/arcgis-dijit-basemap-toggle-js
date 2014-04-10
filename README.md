@@ -3,9 +3,9 @@
 ## Features
 A simple dijit button to toggle between two basemaps.
 
-![App](https://raw.github.com/driskull/arcgis-dijit-basemap-toggle-js/master/images/demo.png)
+![App](https://raw.github.com/esri/arcgis-dijit-basemap-toggle-js/master/images/demo.png)
 
-[View Demo](http://driskull.github.com/arcgis-dijit-basemap-toggle-js/)
+[View Demo](http://esri.github.com/arcgis-dijit-basemap-toggle-js/)
 
 ## Instructions
 
