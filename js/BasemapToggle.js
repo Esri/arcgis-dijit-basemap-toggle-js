@@ -9,8 +9,8 @@ define([
     "dijit/_TemplatedMixin",
     "dojo/on",
     // load template
-    "dojo/text!zesri/dijit/templates/BasemapToggle.html",
-    "dojo/i18n!zesri/nls/jsapi",
+    "dojo/text!./dijit/templates/BasemapToggle.html",
+    "dojo/i18n!./nls/jsapi",
     "dojo/dom-class",
     "dojo/dom-style",
     "dojo/dom-construct"
@@ -162,9 +162,9 @@ function (
         _init: function() {
             this._visible();
             this._basemapChange();
-            on(this.map, "basemap-change", lang.hitch(this, function() {
+            this.own(on(this.map, "basemap-change", lang.hitch(this, function() {
                 this._basemapChange();
-            }));
+            })));
             this.set("loaded", true);
             this.emit("load", {});
         },
