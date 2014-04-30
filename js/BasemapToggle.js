@@ -26,8 +26,7 @@ function (
     domClass, domStyle, domConstruct
 ) {
     var basePath = require.toUrl("esri/dijit");
-    var Widget = declare([_WidgetBase, _TemplatedMixin, Evented], {
-        declaredClass: "esri.dijit.BasemapToggle",
+    var Widget = declare("esri.dijit.BasemapToggle", [_WidgetBase, _TemplatedMixin, Evented], {
         templateString: dijitTemplate,
         options: {
             theme: "BasemapToggle",
