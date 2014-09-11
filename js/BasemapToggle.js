@@ -1,4 +1,5 @@
 define([
+    "require",
     "dojo/Evented",
     "dojo/_base/declare",
     "dojo/_base/lang",
@@ -16,6 +17,7 @@ define([
     "dojo/dom-construct"
 ],
 function (
+    require,
     Evented,
     declare,
     lang,
