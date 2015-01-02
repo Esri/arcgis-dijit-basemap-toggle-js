@@ -14,7 +14,8 @@ define([
     "dojo/i18n!application/nls/jsapi",
     "dojo/dom-class",
     "dojo/dom-style",
-    "dojo/dom-construct"
+    "dojo/dom-construct",
+    "esri/basemaps"
 ],
 function (
     require,
@@ -25,9 +26,8 @@ function (
     _WidgetBase, a11yclick, _TemplatedMixin,
     on,
     dijitTemplate, i18n,
-    domClass, domStyle, domConstruct
+    domClass, domStyle, domConstruct, esriBasemaps
 ) {
-    var basePath = require.toUrl("esri/dijit");
     var Widget = declare("esri.dijit.BasemapToggle", [_WidgetBase, _TemplatedMixin, Evented], {
         templateString: dijitTemplate,
         options: {
@@ -36,40 +36,7 @@ function (
             visible: true,
             basemap: "hybrid",
             defaultBasemap: "streets",
-            basemaps: {
-                "streets": {
-                    label: i18n.widgets.basemapToggle.basemapLabels.streets,
-                    url: basePath + "/images/basemaps/streets.jpg"
-                }, 
-                "satellite": {
-                    label: i18n.widgets.basemapToggle.basemapLabels.satellite,
-                    url: basePath + "/images/basemaps/satellite.jpg"
-                }, 
-                "hybrid": {
-                    label: i18n.widgets.basemapToggle.basemapLabels.hybrid,
-                    url: basePath + "/images/basemaps/hybrid.jpg"
-                }, 
-                "topo": {
-                    label: i18n.widgets.basemapToggle.basemapLabels.topo,
-                    url: basePath + "/images/basemaps/topo.jpg"
-                }, 
-                "gray": {
-                    label: i18n.widgets.basemapToggle.basemapLabels.gray,
-                    url: basePath + "/images/basemaps/gray.jpg"
-                }, 
-                "oceans": {
-                    label: i18n.widgets.basemapToggle.basemapLabels.oceans,
-                    url: basePath + "/images/basemaps/oceans.jpg"
-                }, 
-                "national-geographic": {
-                    label: i18n.widgets.basemapToggle.basemapLabels['national-geographic'],
-                    url: basePath + "/images/basemaps/national-geographic.jpg"
-                }, 
-                "osm": {
-                    label: i18n.widgets.basemapToggle.basemapLabels.osm,
-                    url: basePath + "/images/basemaps/osm.jpg"
-                }
-            }
+            basemaps: esriBasemaps
         },
         // lifecycle: 1
         constructor: function(options, srcRefNode) {
@@ -93,6 +60,8 @@ function (
                 container: "basemapContainer",
                 toggleButton: "toggleButton",
                 basemapImage: "basemapImage",
+                basemapImageContainer: "basemapImageContainer",
+                basemapImageBG: "basemapBG",
                 basemapTitle: "basemapTitle"
             };
         },
@@ -107,7 +76,7 @@ function (
             // map not defined
             if (!this.map) {
                 this.destroy();
-                console.log('BasemapToggle::map required');
+                console.log("BasemapToggle::map required");
             }
             // when map is loaded
             if (this.map.loaded) {
@@ -178,12 +147,14 @@ function (
         _updateImage: function(){
             var basemap = this.get("basemap");
             var info = this._getBasemapInfo(basemap);
-            var imageUrl = info.url;
-            var html = '';
-            html += '<div class="' + this._css.basemapImage + '"><img alt="' + info.label + '" src="' + imageUrl + '" /></div>';
-            html += '<div class="' + this._css.basemapTitle + '">' + info.label + '</div>';
+            var imageUrl = info.thumbnailUrl;
+            var html = "";
+            html += "<div class=\"" + this._css.basemapImageContainer + "\">";
+            html += "<div class=\"" + this._css.basemapImage + "\"><div class=\"" + this._css.basemapImageBG + "\" style=\"background-image:url(" + imageUrl + ")\" title=\"" + info.title + "\"></div></div>";
+            html += "<div title=\"" + info.title + "\" class=\"" + this._css.basemapTitle + "\">" + info.title + "</div>";
+            html += "<div>";
             domConstruct.empty(this._toggleNode);
-            domConstruct.place(html, this._toggleNode, 'only');
+            domConstruct.place(html, this._toggleNode, "only");
         },
         _basemapChange: function() {
             var bm = this.map.getBasemap();
@@ -204,9 +175,9 @@ function (
         },
         _visible: function() {
             if (this.get("visible")) {
-                domStyle.set(this.domNode, 'display', 'block');
+                domStyle.set(this.domNode, "display", "block");
             } else {
-                domStyle.set(this.domNode, 'display', 'none');
+                domStyle.set(this.domNode, "display", "none");
             }
         }
     });
